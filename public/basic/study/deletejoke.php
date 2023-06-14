@@ -1,16 +1,20 @@
 <?php
     try {
-        $pdo = new PDO('mysql:host=localhost;dbname=php_study;charset=utf8', 'jaeho', '1234');
+        // $pdo = new PDO('mysql:host=localhost;dbname=php_study;charset=utf8', 'jaeho', '1234');
+        // $pdo -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $pdo -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        include __DIR__ . '/../includes/DatabaseConnection.php';
+        include __DIR__ . '/../includes/DatabaseFunctions.php';
 
-        $sql = 'DELETE FROM `joke` WHERE `id` = :id';
+        // $sql = 'DELETE FROM `joke` WHERE `id` = :id';
 
-        $stmt = $pdo -> prepare($sql);
+        // $stmt = $pdo -> prepare($sql);
 
-        $stmt -> bindValue(':id', $_POST['id']);
+        // $stmt -> bindValue(':id', $_POST['id']);
 
-        $stmt -> execute();
+        // $stmt -> execute();
+
+        deleteJoke($pdo, $_POST['id']);
 
         header('location: jokes.php');
 

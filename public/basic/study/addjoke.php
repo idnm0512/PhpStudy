@@ -1,19 +1,24 @@
 <?php
     if (isset($_POST['joketext'])) {
         try {
-            $pdo = new PDO('mysql:host=localhost;dbname=php_study;charset=utf8', 'jaeho', '1234');
+            // $pdo = new PDO('mysql:host=localhost;dbname=php_study;charset=utf8', 'jaeho', '1234');
+            // $pdo -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $pdo -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            include __DIR__ . '/../includes/DatabaseConnection.php';
+            include __DIR__ . '/../includes/DatabaseFunctions.php';
 
-            $sql = 'INSERT INTO `joke` SET
-                    `joketext` = :joketext,
-                    `jokedate` = CURDATE()';
+            // $sql = 'INSERT INTO `joke` SET
+            //         `joketext` = :joketext,
+            //         `jokedate` = CURDATE()';
             
-            $stmt = $pdo -> prepare($sql);
+            // $stmt = $pdo -> prepare($sql);
 
-            $stmt -> bindValue(':joketext', $_POST['joketext']);
+            // $stmt -> bindValue(':joketext', $_POST['joketext']);
 
-            $stmt -> execute();
+            // $stmt -> execute();
+
+            // 현재 3번째 인수 authorID 값은 임시 처리
+            insertJoke($pdo, $_POST['joketext'], 1);
 
             header('location: jokes.php');
             

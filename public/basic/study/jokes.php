@@ -1,10 +1,13 @@
 <?php
     try {
         // MySQL 접속 도구 중 하나인 PDO 라이브러리를 통해 DB 서버에 접속
-        $pdo = new PDO('mysql:host=localhost;dbname=php_study;charset=utf8', 'jaeho', '1234');
+        // $pdo = new PDO('mysql:host=localhost;dbname=php_study;charset=utf8', 'jaeho', '1234');
 
         // PDO 객체의 오류 처리 방식(PDO::ATTR_ERRMODE)을 예외 처리(PDO::ERRMODE_EXCEPTION)로 설정한다.
-        $pdo -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        // $pdo -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        include __DIR__ . '/../includes/DatabaseConnection.php';
+        include __DIR__ . '/../includes/DatabaseFunctions.php';
 
         // $sql = 'SELECT `joketext` FROM `joke`';
 
@@ -14,7 +17,8 @@
         //     $jokes[] = $row['joketext'];
         // }
 
-        $sql = 'SELECT `id`, `joketext` FROM `joke`';
+        // $sql = 'SELECT `joke`.`id`, `joketext`, `name`, `email` FROM `joke`
+        //         INNER JOIN `author` ON `authorId` = `author`.`id`';
 
         // $result = $pdo -> query($sql);
 
@@ -23,9 +27,11 @@
         //     $jokes[] = $row;
         // }
 
-        $jokes = $pdo -> query($sql);
+        $jokes = allJoke($pdo);
 
         $title = '유머 글 목록';
+
+        $totalJokes = totalJokes($pdo);
 
         // $output = '';
 
