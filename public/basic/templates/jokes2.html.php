@@ -8,7 +8,9 @@
 
             (작성자:
             <a href="mailto:<?php echo htmlspecialchars($joke['email'], ENT_QUOTES, 'UTF-8') ?>">
-                <?php echo htmlspecialchars($joke['name'], ENT_QUOTES, 'UTF-8') ?></a>)
+                <?php echo htmlspecialchars($joke['name'], ENT_QUOTES, 'UTF-8') ?></a>
+            작성일: <?=$joke['jokedate']?>)
+                
             <a href="editjoke.php?id=<?=$joke['id']?>">수정</a>
         </p>
         <form action="deletejoke.php" method="post">
