@@ -1,22 +1,62 @@
 <?php
+    function loadTemplate($templateFileName, $variables = []) {
+        extract($variables);
+
+        ob_start();
+
+        include __DIR__ . '/../templates/' . $templateFileName;
+
+        return ob_get_clean();
+    }
+
     try {
-        // MySQL 접속 도구 중 하나인 PDO 라이브러리를 통해 DB 서버에 접속
-        $pdo = new PDO('mysql:host=localhost;dbname=php_study;charset=utf8', 'jaeho', '1234');
+        include __DIR__ . '/../includes/DatabaseConnection.php';
+        include __DIR__ . '/../classes/DatabaseTable.php';
+        include __DIR__ . '/../controllers/JokeController.php';
+    
+        $jokesTable = new DatabaseTable($pdo, 'joke', 'id');
+        $authorsTable = new DatabaseTable($pdo, 'author', 'id');
+    
+        $jokeController = new JokeController($jokesTable, $authorsTable);
 
-        // PDO 객체의 오류 처리 방식(PDO::ATTR_ERRMODE)을 예외 처리(PDO::ERRMODE_EXCEPTION)로 설정한다.
-        $pdo -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        // if (isset($_GET['edit'])) {
+        //     $page = $jokeController -> edit();
+        // } else if (isset($_GET['delete'])) {
+        //     $page = $jokeController -> delete();
+        // } else if (isset($_GET['list'])) {
+        //     $page = $jokeController -> list();
+        // } else {
+        //     $page = $jokeController -> home();
+        // }
 
-        $output = '데이터베이스 접속 성공.';
+        $action = $_GET['action'] ?? 'home';
+
+        $page = $jokeController -> $action();
+    
+        $title = $page['title'];
+
+        // if (isset($page['variables'])) {
+        //     extract($page['variables']);
+        // }
+
+        // ob_start();
+
+        // include __DIR__ . '/../templates/' . $page['template'];
+
+        // $output = ob_get_clean();
+
+        if (isset($page['variables'])) {
+            $output = loadTemplate($page['template'], $page['variables']);
+        } else {
+            $output = loadTemplate($page['template']);
+        }
+
     } catch (PDOException $e) {
-        $output = '데이터베이스 서버에 접속할 수 없습니다.'
+        $output = '데이터베이스 오류.'
                     . '<br> 내용: ' . $e -> getMessage()
                     . '<br> 경로: ' . $e -> getFile()
                     . '<br> 라인: ' . $e -> getLine();
-
-        // PHP는 스크립트를 끝까지 실행하고 나서 모든 데이터베이스 접속을 자동으로 끊는다.
-        // 데이터베이스 접속을 직접 끊을 때는 객체가 담긴 배열에 null을 할당한다.
-        // $pdo = null;
     }
 
-    include __DIR__ . '/../templates/output.html.php';
+    include __DIR__ . '/../templates/layout.html.php';
 ?>

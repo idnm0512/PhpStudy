@@ -27,12 +27,15 @@
         //     $jokes[] = $row;
         // }
 
-        $result = findAll($pdo, 'joke');
+        $jokesTable = new DatabaseTable($pdo, 'joke', 'id');
+        $authorsTable = new DatabaseTable($pdo, 'author', 'id');
+
+        $result = $jokesTable -> findAll();
 
         $jokes = [];
 
         foreach ($result as $joke) {
-            $author = findById($pdo, 'author', 'id', $joke['authorId']);
+            $author = $authorsTable -> findById($joke['authorId']);
 
             $jokes[] = [
                 'id' => $joke['id'],
@@ -45,7 +48,7 @@
 
         $title = '유머 글 목록';
 
-        $totalJokes = total($pdo, 'joke');
+        $totalJokes = $jokesTable -> total();
 
         // $output = '';
 
