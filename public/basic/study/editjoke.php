@@ -1,21 +1,23 @@
 <?php
-    include __DIR__ . '/../includes/DatabaseConnection.php';
-    include __DIR__ . '/../includes/DatabaseFunctions.php';
-
     try {
+        include __DIR__ . '/../includes/DatabaseConnection.php';
+        include __DIR__ . '/../includes/DatabaseFunctions.php';
+
+        $jokesTable = new DatabaseTable($pdo, 'joke', 'id');
+
         if (isset($_POST['joke'])) {
             $joke = $_POST['joke'];
 
             $joke['authorId'] = 1;
             $joke['jokedate'] = new DateTime();
 
-            save($pdo, 'joke', 'id' ,$joke);
+            $jokesTable -> save($joke);
 
             header('location: jokes.php');
 
         } else {
             if (isset($_GET['id'])) {
-                $joke = findById($pdo, 'joke', 'id', $_GET['id']);
+                $joke = $jokesTable -> findById($_GET['id']);
             }
 
             $title = '유머 글 수정';
