@@ -18,7 +18,11 @@
             // $stmt -> execute();
 
             // 현재 3번째 인수 authorID 값은 임시 처리
-            insertJoke($pdo, $_POST['joketext'], 1);
+            insert($pdo, 'joke' ,[
+                'authorId' => 1,
+                'joketext' => $_POST['joketext'],
+                'jokedate' => new DateTime()
+            ]);
 
             header('location: jokes.php');
             

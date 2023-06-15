@@ -14,7 +14,7 @@
 
         // $stmt -> execute();
 
-        deleteJoke($pdo, $_POST['id']);
+        delete($pdo, 'joke', 'id', $_POST['id']);
 
         header('location: jokes.php');
 
