@@ -7,7 +7,7 @@
 
         $route = ltrim(strtok($_SERVER['REQUEST_URI'], '?'), '/');
 
-        $entryPoint = new EntryPoint($route, $_SERVER['REQEUST_METHOD'], new IjdbRoutes());
+        $entryPoint = new EntryPoint($route, $_SERVER['REQUEST_METHOD'], new IjdbRoutes());
         $entryPoint -> run();
 
     } catch (PDOException $e) {

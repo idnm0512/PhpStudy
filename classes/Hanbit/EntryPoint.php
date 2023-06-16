@@ -36,8 +36,8 @@
         public function run() {
             $routes = $this -> routes -> getRoutes();
 
-            $controller = $this -> routes[$routes][$this -> method]['controller'];
-            $action = $this -> routes[$routes][$this -> method]['action'];
+            $controller = $routes[$this -> route][$this -> method]['controller'];
+            $action = $routes[$this -> route][$this -> method]['action'];
 
             $page = $controller -> $action();
 
