@@ -1,5 +1,9 @@
 <?php
-    class JokeController {
+    namespace Ijdb\Controllers;
+
+    use \Hanbit\DatabaseTable;
+
+    class Joke {
 
         private $jokesTable;
         private $authorsTable;
@@ -45,36 +49,35 @@
                 ];
         }
 
-        public function edit() {
-            if (isset($_POST['joke'])) {
-                $joke = $_POST['joke'];
+        public function saveEdit() {
+            $joke = $_POST['joke'];
     
-                $joke['authorId'] = 1;
-                $joke['jokedate'] = new DateTime();
-    
-                $this -> jokesTable -> save($joke);
-    
-                header('location: index.php?action=list');
-    
-            } else {
-                if (isset($_GET['id'])) {
-                    $joke = $this -> jokesTable -> findById($_GET['id']);
-                }
-    
-                $title = '유머 글 수정';
+            $joke['authorId'] = 1;
+            $joke['jokedate'] = new \DateTime();
 
-                return ['template' => 'editjoke.html.php',
-                        'title' => $title,
-                        'variables' => [
-                            'joke' => $joke ?? null
-                        ]
-                    ];
+            $this -> jokesTable -> save($joke);
+
+            header('location: /joke/list');
+        }
+
+        public function edit() {
+            if (isset($_GET['id'])) {
+                $joke = $this -> jokesTable -> findById($_GET['id']);
             }
+
+            $title = '유머 글 수정';
+
+            return ['template' => 'editjoke.html.php',
+                'title' => $title,
+                'variables' => [
+                    'joke' => $joke ?? null
+                ]
+            ];
         }
 
         public function delete() {
             $this -> jokesTable -> delete($_POST['id']);
 
-            header('location: index.php?action=list');
+            header('location: /joke/list');
         }
     }

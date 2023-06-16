@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title><?=$title?></title>
-    <link rel="stylesheet" href="jokes.css" />
-    <link rel="stylesheet" href="form.css" />
+    <link rel="stylesheet" href="/jokes.css">
 </head>
 <body>
     <header>
@@ -13,9 +12,9 @@
 
     <nav>
         <ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a href="index.php?action=list">유머 글 목록</a></li>
-            <li><a href="index.php?action=edit">유머 글 등록</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/joke/list">유머 글 목록</a></li>
+            <li><a href="/joke/edit">유머 글 등록</a></li>
         </ul>
     </nav>
 
