@@ -41,3 +41,15 @@ input[type="checkbox"] + label {clear: right;}
 
 .currentpage:before { content: "["; }
 .currentpage:after { content: "]"; }
+
+.errors {
+    padding: 1em;
+    border: 1px solid red;
+    background-color: lightyellow;
+    color: red;
+    margin-bottom: 1em;
+    overflow: auto;
+}
+.errors ul {
+    margin-left: 1em;
+}

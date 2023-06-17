@@ -65,15 +65,27 @@
 
         // ID로 테이블 데이터 가져오기
         public function findById($value) {
-            $query = 'SELECT * FROM `' . $this -> table . '` WHERE `' . $this -> primaryKey . '` = :value';
+            $query = 'SELECT * FROM `' . $this -> table . '` WHERE `' . $this -> primaryKey . '` = :primaryKey';
     
             $parameters = [
-                'value' => $value
+                'primaryKey' => $value
             ];
     
             $query = $this -> query($query, $parameters);
     
             return $query -> fetch();
+        }
+
+        public function find($column, $value) {
+            $query = 'SELECT * FROM `' . $this -> table . '` WHERE `' . $column . '` = :value';
+
+            $parameters = [
+                'value' => $value
+            ];
+
+            $query = $this -> query($query, $parameters);
+
+            return $query -> fetchAll();
         }
     
         // 테이블 데이터 삽입

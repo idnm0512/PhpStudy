@@ -65,7 +65,7 @@
 
         // 템플릿을 include 한다.
         // PHP 코드가 실행되지만, 결과 HTML은 브라우저로 전송되지 않고 버퍼에 저장된다.
-        include __DIR__ . '/../templates/jokes2.html.php';
+        include __DIR__ . '/../templates/jokes.html.php';
 
         // 출력 버퍼의 내용을 읽고 $output 변수에 저장한다.
         $output = ob_get_clean();

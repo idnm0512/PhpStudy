@@ -1,22 +1,25 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>유머 글 목록</title>
-</head>
-<body>
-    <?php if (isset($error)): ?>
+<p>
+    <?=$totalJokes?>개 유머 글이 있습니다.
+</p>
+<?php foreach ($jokes as $joke): ?>
+    <blockquote>
         <p>
-            <?=$error?>
+            <?=htmlspecialchars($joke['joketext'], ENT_QUOTES, 'UTF-8')?>
+
+            (작성자:
+            <a href="mailto:<?php echo htmlspecialchars($joke['email'], ENT_QUOTES, 'UTF-8') ?>">
+                <?php echo htmlspecialchars($joke['name'], ENT_QUOTES, 'UTF-8') ?></a>
+            작성일: <?=$joke['jokedate']?>)
+        <?php if ($userId == $joke['authorId']): ?>
+            <a href="/joke/edit?id=<?=$joke['id']?>">수정</a>
         </p>
-    <?php else: ?>
-        <?php foreach ($jokes as $joke): ?>
-            <blockquote>
-                <p>
-                    <?=htmlspecialchars($joke, ENT_QUOTES, 'UTF-8')?>
-                </p>
-            </blockquote>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</body>
-</html>
+        
+        <form action="/joke/delete" method="post">
+            <input type="hidden" name="id" value="<?=$joke['id']?>">
+            <input type="submit" value="삭제">
+        </form>
+        <?php else: ?>
+        </p>
+        <?php endif; ?>
+    </blockquote>
+<?php endforeach; ?>
