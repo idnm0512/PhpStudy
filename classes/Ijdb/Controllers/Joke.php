@@ -56,27 +56,6 @@
             ];
         }
 
-        public function saveEdit() {
-            $author = $this -> authentication -> getUser();
-
-            if (isset($_GET['id'])) {
-                $joke = $this -> jokesTable -> findById($_GET['id']);
-
-                if ($joke['authorId'] != $author['id']) {
-                    return;
-                }
-            }
-
-            $joke = $_POST['joke'];
-
-            $joke['jokedate'] = new \DateTime();
-            $joke['authorId'] = $author['id'];
-
-            $this -> jokesTable -> save($joke);
-
-            header('location: /joke/list');
-        }
-
         public function edit() {
             if (!$this -> authentication -> isLoggedIn()) {
                 return ['template' => 'loginerror.html.php',
@@ -99,6 +78,27 @@
                     'userId' => $author['id'] ?? null
                 ]
             ];
+        }
+
+        public function saveEdit() {
+            $author = $this -> authentication -> getUser();
+
+            if (isset($_GET['id'])) {
+                $joke = $this -> jokesTable -> findById($_GET['id']);
+
+                if ($joke['authorId'] != $author['id']) {
+                    return;
+                }
+            }
+
+            $joke = $_POST['joke'];
+
+            $joke['jokedate'] = new \DateTime();
+            $joke['authorId'] = $author['id'];
+
+            $this -> jokesTable -> save($joke);
+
+            header('location: /joke/list');
         }
 
         public function delete() {

@@ -45,16 +45,16 @@
                     ],
                     'login' => true
                 ],
-                'logout' => [
-                    'GET' => [
-                        'controller' => $loginCotroller,
-                        'action' => 'logout'
-                    ]
-                ],
                 'login/error' => [
                     'GET' => [
                         'controller' => $loginCotroller,
                         'action' => 'error'
+                    ]
+                ],
+                'logout' => [
+                    'GET' => [
+                        'controller' => $loginCotroller,
+                        'action' => 'logout'
                     ]
                 ],
                 'author/register' => [
@@ -71,6 +71,12 @@
                     'GET' => [
                         'controller' => $registerController,
                         'action' => 'success'
+                    ]
+                ],
+                'joke/list' => [
+                    'GET' => [
+                        'controller' => $jokeController,
+                        'action' => 'list'
                     ]
                 ],
                 'joke/edit' => [
@@ -90,12 +96,6 @@
                         'action' => 'delete'
                     ],
                     'login' => true
-                ],
-                'joke/list' => [
-                    'GET' => [
-                        'controller' => $jokeController,
-                        'action' => 'list'
-                    ]
                 ],
                 '' => [
                     'GET' => [
