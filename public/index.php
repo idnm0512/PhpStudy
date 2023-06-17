@@ -15,6 +15,6 @@
                     . '<br> 내용: ' . $e -> getMessage()
                     . '<br> 경로: ' . $e -> getFile()
                     . '<br> 라인: ' . $e -> getLine();
-        
+
         include __DIR__ . '/../templates/layout.html.php';
     }
