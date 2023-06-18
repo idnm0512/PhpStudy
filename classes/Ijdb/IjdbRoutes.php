@@ -7,25 +7,33 @@
     use \Ijdb\Controllers\Joke;
     use \Ijdb\Controllers\Register;
     use \Ijdb\Controllers\Login;
+    use \Ijdb\Controllers\Category;
 
     class IjdbRoutes implements Routes {
 
         private $jokesTable;
         private $authorsTable;
+        private $categoriesTable;
         private $authentication;
+        private $jokeCategoriesTable;
 
         public function __construct() {
             include __DIR__ . '/../../includes/DatabaseConnection.php';
 
-            $this -> jokesTable = new DatabaseTable($pdo, 'joke', 'id');
-            $this -> authorsTable = new DatabaseTable($pdo, 'author', 'id');
+            $this -> jokesTable = new DatabaseTable($pdo, 'joke', 'id', '\Ijdb\Entity\Joke',
+                                                    [&$this -> authorsTable, &$this -> jokeCategoriesTable]);
+            $this -> authorsTable = new DatabaseTable($pdo, 'author', 'id', '\Ijdb\Entity\Author', [&$this -> jokesTable]);
+            $this -> categoriesTable = new DatabaseTable($pdo, 'category', 'id', '\Ijdb\Entity\Category',
+                                                    [&$this -> jokesTable, &$this -> jokeCategoriesTable]);
             $this -> authentication = new Authentication($this -> authorsTable, 'email', 'password');
+            $this -> jokeCategoriesTable = new DatabaseTable($pdo, 'joke_category', 'categoryId');
         }
         
         public function getRoutes(): array {
-            $jokeController = new Joke($this -> jokesTable, $this -> authorsTable, $this -> authentication);
+            $jokeController = new Joke($this -> jokesTable, $this -> authorsTable, $this -> categoriesTable, $this -> authentication);
             $registerController = new Register($this -> authorsTable);
             $loginCotroller = new Login($this -> authentication);
+            $categoryController = new Category($this -> categoriesTable);
 
             $routes = [
                 'login' => [
@@ -97,6 +105,34 @@
                     ],
                     'login' => true
                 ],
+                'category/list' => [
+                    'GET' => [
+                        'controller' => $categoryController,
+                        'action' => 'list'
+                    ],
+                    'login' => true,
+                    'permissions' => \Ijdb\Entity\Author::LIST_CATEGORIES
+                ],
+                'category/edit' => [
+                    'POST' => [
+                        'controller' => $categoryController,
+                        'action' => 'saveEdit'
+                    ],
+                    'GET' => [
+                        'controller' => $categoryController,
+                        'action' => 'edit'
+                    ],
+                    'login' => true,
+                    'permissions' => \Ijdb\Entity\Author::EDIT_CATEGORIES
+                ],
+                'category/delete' => [
+                    'POST' => [
+                        'controller' => $categoryController,
+                        'action' => 'delete'
+                    ],
+                    'login' => true,
+                    'permissions' => \Ijdb\Entity\Author::REMOVE_CATEGORIES
+                ],
                 '' => [
                     'GET' => [
                         'controller' => $jokeController,
@@ -110,5 +146,15 @@
 
         public function getAuthentication(): Authentication {
             return $this -> authentication;
+        }
+
+        public function checkPermission($permission): bool {
+            $user = $this -> authentication -> getUser();
+
+            if ($user && $user -> hasPermission($permission)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
