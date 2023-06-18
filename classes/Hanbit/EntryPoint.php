@@ -39,23 +39,32 @@
 
             $authentication = $this -> routes -> getAuthentication();
 
-            $controller = $routes[$this -> route][$this -> method]['controller'];
-            $action = $routes[$this -> route][$this -> method]['action'];
-
-            $page = $controller -> $action();
-
-            $title = $page['title'];
-
-            if (isset($page['variables'])) {
-                $output = $this -> loadTemplate($page['template'], $page['variables']);
-            } else {
-                $output = $this -> loadTemplate($page['template']);
+            if (isset($routes[$this -> route]['login']) && !$authentication -> isLoggedIn()) {
+                header('location: /login/error');
             }
+            else if (isset($routes[$this -> route]['permissions']) && !$this -> routes -> checkPermission($routes[$this -> route]['permissions'])) {
+                header('location: /login/permissionserror');	
+            }
+            else {
+                $controller = $routes[$this -> route][$this -> method]['controller'];
+                $action = $routes[$this -> route][$this -> method]['action'];
 
-            echo $this -> loadTemplate('layout.html.php', [
-                'loggedIn' => $authentication -> isLoggedIn(),
-                'output' => $output,
-                'title' => $title,
-            ]);
+                $page = $controller -> $action();
+
+                $title = $page['title'];
+
+                if (isset($page['variables'])) {
+                    $output = $this -> loadTemplate($page['template'], $page['variables']);
+                } else {
+                    $output = $this -> loadTemplate($page['template']);
+                }
+
+                echo $this -> loadTemplate('layout.html.php', [
+                    'loggedIn' => $authentication -> isLoggedIn(),
+                    'output' => $output,
+                    'title' => $title,
+                ]);
+    
+            }
         }
     }

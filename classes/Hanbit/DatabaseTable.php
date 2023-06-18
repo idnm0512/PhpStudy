@@ -6,11 +6,16 @@
         private $pdo;
         private $table;
         private $primaryKey;
+        private $className;
+        private $constructorArgs;
 
-        public function __construct(\PDO $pdo, string $table, string $primaryKey) {
+        public function __construct(\PDO $pdo, string $table, string $primaryKey,
+                                        string $className = '\stdClass', array $constructorArgs = []) {
             $this -> pdo = $pdo;
             $this -> table = $table;
             $this -> primaryKey = $primaryKey;
+            $this -> className = $className;
+            $this -> constructorArgs = $constructorArgs;
         }
 
         // 쿼리 실행
@@ -35,16 +40,28 @@
     
         // 데이터 삽입 또는 수정을 선택적으로 처리하는 메서드
         public function save($record) {
+            $entity = new $this -> className(...$this -> constructorArgs);
+
             try {
                 if ($record[$this -> primaryKey] == '') {
                     $record[$this -> primaryKey] = null;
                 }
     
-                $this -> insert($record);
+                $insertId = $this -> insert($record);
+
+                $entity -> {$this -> primaryKey} = $insertId;
     
             } catch (\PDOException $e) {
                 $this -> update($record);
             }
+
+            foreach ($record as $key => $value) {
+                if (!empty($value)) {
+                    $entity -> $key = $value;
+                }
+            }
+
+            return $entity;
         }
     
         // 테이블의 전체 row 갯수 구하기
@@ -60,20 +77,20 @@
         public function findAll() {
             $result = $this -> query('SELECT * FROM `' . $this -> table . '`');
     
-            return $result -> fetchAll();
+            return $result -> fetchAll(\PDO::FETCH_CLASS, $this -> className, $this -> constructorArgs);
         }
 
         // ID로 테이블 데이터 가져오기
         public function findById($value) {
-            $query = 'SELECT * FROM `' . $this -> table . '` WHERE `' . $this -> primaryKey . '` = :primaryKey';
+            $query = 'SELECT * FROM `' . $this -> table . '` WHERE `' . $this -> primaryKey . '` = :value';
     
             $parameters = [
-                'primaryKey' => $value
+                'value' => $value
             ];
     
             $query = $this -> query($query, $parameters);
     
-            return $query -> fetch();
+            return $query -> fetchObject($this -> className, $this -> constructorArgs);
         }
 
         public function find($column, $value) {
@@ -85,7 +102,7 @@
 
             $query = $this -> query($query, $parameters);
 
-            return $query -> fetchAll();
+            return $query -> fetchAll(\PDO::FETCH_CLASS, $this -> className, $this -> constructorArgs);
         }
     
         // 테이블 데이터 삽입
@@ -111,6 +128,8 @@
             $fields = $this -> processDates($fields);
     
             $this -> query($query, $fields);
+
+            return $this -> pdo -> lastInsertId();
         }
     
         // 테이블 데이터 수정
@@ -137,5 +156,15 @@
             $parameters = [':id' => $id];
     
             $this -> query('DELETE FROM `' . $this -> table . '` WHERE `'. $this -> primaryKey . '` = :id', $parameters);
+        }
+
+        public function deleteWhere($column, $value) {
+            $query = 'DELETE FROM ' . $this -> table . ' WHERE ' . $column . ' = :value';
+
+            $parameters = [
+                'value' => $value
+            ];
+
+            $query = $this -> query($query, $parameters);
         }
     }
