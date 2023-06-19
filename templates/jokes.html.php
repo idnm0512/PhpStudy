@@ -24,17 +24,18 @@
                         $date = new DateTime($joke -> jokedate);
                         echo $date -> format('jS F Y');
                     ?>)
-                <?php if ($userId == $joke -> authorId): ?>
-                    <a href="/joke/edit?id=<?=$joke -> id?>">수정</a>
+                    <?php if ($user): ?>
+                        <?php if ($user -> id == $joke -> authorId || $user -> hasPermission(\Ijdb\Entity\Author::EDIT_JOKES)): ?>
+                            <a href="/joke/edit?id=<?=$joke -> id?>">수정</a>
+                        <?php endif; ?>
+                        <?php if ($user -> id == $joke -> authorId || $user -> hasPermission(\Ijdb\Entity\Author::DELETE_JOKES)): ?>
+                            <form action="/joke/delete" method="post">
+                                <input type="hidden" name="id" value="<?=$joke -> id?>">
+                                <input type="submit" value="삭제">
+                            </form>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </p>
-                
-                <form action="/joke/delete" method="post">
-                    <input type="hidden" name="id" value="<?=$joke -> id?>">
-                    <input type="submit" value="삭제">
-                </form>
-                <?php else: ?>
-                </p>
-                <?php endif; ?>
             </blockquote>
         <?php endforeach; ?>
     </div>
