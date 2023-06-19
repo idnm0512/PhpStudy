@@ -8,6 +8,7 @@
     use \Ijdb\Controllers\Register;
     use \Ijdb\Controllers\Login;
     use \Ijdb\Controllers\Category;
+    use \Ijdb\Entity\Author;
 
     class IjdbRoutes implements Routes {
 
@@ -34,6 +35,7 @@
             $registerController = new Register($this -> authorsTable);
             $loginCotroller = new Login($this -> authentication);
             $categoryController = new Category($this -> categoriesTable);
+            $authorController = $registerController;
 
             $routes = [
                 'login' => [
@@ -81,6 +83,26 @@
                         'action' => 'success'
                     ]
                 ],
+                'author/list' => [
+                    'GET' => [
+                        'controller' => $authorController,
+                        'action' => 'list'
+                    ],
+                    'login' => true,
+                    'permissions' => Author::EDIT_USER_ACCESS
+                ],
+                'author/permissions' => [
+                    'GET' => [
+                        'controller' => $authorController,
+                        'action' => 'permissions'
+                    ],
+                    'POST' => [
+                        'controller' => $authorController,
+                        'action' => 'savePermissions'
+                    ],
+                    'login' => true,
+                    'permissions' => Author::EDIT_USER_ACCESS 
+                ],
                 'joke/list' => [
                     'GET' => [
                         'controller' => $jokeController,
@@ -111,7 +133,7 @@
                         'action' => 'list'
                     ],
                     'login' => true,
-                    'permissions' => \Ijdb\Entity\Author::LIST_CATEGORIES
+                    'permissions' => Author::LIST_CATEGORIES
                 ],
                 'category/edit' => [
                     'POST' => [
@@ -123,7 +145,7 @@
                         'action' => 'edit'
                     ],
                     'login' => true,
-                    'permissions' => \Ijdb\Entity\Author::EDIT_CATEGORIES
+                    'permissions' => Author::EDIT_CATEGORIES
                 ],
                 'category/delete' => [
                     'POST' => [
@@ -131,7 +153,7 @@
                         'action' => 'delete'
                     ],
                     'login' => true,
-                    'permissions' => \Ijdb\Entity\Author::REMOVE_CATEGORIES
+                    'permissions' => Author::REMOVE_CATEGORIES
                 ],
                 '' => [
                     'GET' => [
